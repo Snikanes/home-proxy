@@ -1,0 +1,25 @@
+{
+  "name": "home-proxy",
+  "version": "1.0.0",
+  "description": "A reverse proxy for smart home setups",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Snikanes/home-proxy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Snikanes/home-proxy/issues"
+  },
+  "homepage": "https://github.com/Snikanes/home-proxy#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "helmet": "^3.12.1",
+    "request": "^2.86.0"
+  }
+}
