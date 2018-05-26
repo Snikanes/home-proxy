@@ -48,7 +48,7 @@ app.post('/login', (req, res) => {
         if(username === auth.username && password === auth.password) {
             const token = jwt.sign(username, auth.jwtSecret)
             res.cookie(JWT_COOKIE_NAME, token)
-            res.sendFile(path.resolve('static/loginSuccessful.html'))
+            return res.sendFile(path.resolve('static/loginSuccessful.html'))
         }
     }
     res.status(403)
@@ -59,3 +59,4 @@ app.use(helmet())
 app.use('/', checkAuth)
 app.use('/flood', proxy(options))
 app.listen(3000, () => console.log('Reverse proxy listening on port 3000!'))
+	
