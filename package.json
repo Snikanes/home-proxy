@@ -20,6 +20,8 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "helmet": "^3.12.1",
-    "request": "^2.86.0"
+    "http-proxy-middleware": "^0.18.0",
+    "request": "^2.86.0",
+    "request-promise-native": "^1.0.5"
   }
 }

@@ -1,23 +1,31 @@
 const express = require('express')
 const session = require('express-session')
-const request = require('request')
+const request = require('request-promise-native')
+const proxy = require('http-proxy-middleware')
 const helmet = require('helmet')
 
 const config = require("../config")
 
 const app = express()
 
-// Define stuff to use
-app.use(helmet())
-app.use(session({
-    secret: config.sessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
-}))
+const onReq = (proxyReq, req, res) => {
+     console.log(proxyReq.headers)
+     console.log(req)
+     proxyReq.headers = req.headers
+}
 
-app.all('*', (req, res) => {
-    res.send("Hello world")
-})
+const onRes = (proxyRes, req, res) => {
+     console.log(proxyRes.headers)
+}
+
+const options = {
+    target: 'http://127.0.0.1:1235/',
+    onProxyReq: onReq,
+    //onProxyRes: onRes
+}
+
+app.use('/flood/', proxy(options))
+
 
 app.listen(3000, () => console.log('Reverse proxy listening on port 3000!'))
+
