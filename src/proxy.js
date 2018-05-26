@@ -9,7 +9,8 @@ const config = require("../config")
 const app = express()
 
 const options = {
-    target: 'http://127.0.0.1:1235/'
+    target: 'http://127.0.0.1:1235',
+    pathRewrite: {'/flood' : ''}
 }
 
 app.use('/flood', proxy(options))
