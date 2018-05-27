@@ -14,14 +14,18 @@ const auth = require("../auth")
 const JWT_COOKIE_NAME = 'jwtToken'
 
 const app = express()
+
+const options = {
+    target: 'http://127.0.0.1:1235',
+    pathRewrite: (path, req) => path.replace('/flood', '')
+}
+app.use('/flood', proxy(options))
+
+// Cookie and body parser
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json()) 
 app.use(cookieParser())
 
-const options = {
-    target: 'http://127.0.0.1:1235',
-    pathRewrite: {'/flood' : ''}
-}
 
 const checkAuth = (req, res, next) => {
     const token = req.cookies[JWT_COOKIE_NAME]
@@ -34,7 +38,6 @@ const checkAuth = (req, res, next) => {
         return next()
     }
 }
-
 
 app.get('/login', (req, res) => {
     res.sendFile(path.resolve('static/login.html'))
@@ -55,8 +58,8 @@ app.post('/login', (req, res) => {
     res.send("Wrong credentials")
 })
 
+// Proxy routes
 app.use(helmet())
 app.use('/', checkAuth)
-app.use('/flood', proxy(options))
+
 app.listen(3000, () => console.log('Reverse proxy listening on port 3000!'))
-	
