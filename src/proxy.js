@@ -9,7 +9,6 @@ const path = require('path')
 const config = require("../config")
 const auth = require("../auth")
 
-
 // Constants
 const JWT_COOKIE_NAME = 'jwtToken'
 
@@ -34,11 +33,7 @@ const checkAuth = (req, res, next) => {
     }
 }
 
-app.get('/login', (req, res) => {
-    res.sendFile(path.resolve('static/login.html'))
-})
-
-app.post('/login', jsonParser, (req, res) => {
+app.post('/auth', jsonParser, (req, res) => {
     if(req.body) {
         const username = req.body.username
         const password = req.body.password
