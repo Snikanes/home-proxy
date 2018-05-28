@@ -14,23 +14,18 @@ const auth = require("../auth")
 const JWT_COOKIE_NAME = 'jwtToken'
 
 const app = express()
-
+const jsonParser = bodyParser.urlencoded({ extended: true })
+app.use(cookieParser())
 const options = {
     target: 'http://127.0.0.1:1235',
     pathRewrite: (path, req) => path.replace('/flood', '')
 }
-app.use('/flood', proxy(options))
-
-// Cookie and body parser
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json()) 
-app.use(cookieParser())
-
 
 const checkAuth = (req, res, next) => {
     const token = req.cookies[JWT_COOKIE_NAME]
     if(!token) {
-        return res.redirect('/login')
+	res.status(403)
+        return res.send()
     }
 
     const decoded = jwt.verify(token, auth.jwtSecret)
@@ -43,12 +38,12 @@ app.get('/login', (req, res) => {
     res.sendFile(path.resolve('static/login.html'))
 })
 
-app.post('/login', (req, res) => {
+app.post('/login', jsonParser, (req, res) => {
     if(req.body) {
         const username = req.body.username
         const password = req.body.password
 
-        if(username === auth.username && password === auth.password) {
+	if(username === auth.username && password === auth.password) {
             const token = jwt.sign(username, auth.jwtSecret)
             res.cookie(JWT_COOKIE_NAME, token)
             return res.sendFile(path.resolve('static/loginSuccessful.html'))
@@ -58,8 +53,10 @@ app.post('/login', (req, res) => {
     res.send("Wrong credentials")
 })
 
+app.use('/', checkAuth)
+app.use('/flood', proxy(options))
+
 // Proxy routes
 app.use(helmet())
-app.use('/', checkAuth)
 
 app.listen(3000, () => console.log('Reverse proxy listening on port 3000!'))
